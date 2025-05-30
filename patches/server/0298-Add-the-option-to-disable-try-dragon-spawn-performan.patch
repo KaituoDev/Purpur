@@ -1,0 +1,33 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: YFshadaow <renzd2001@gmail.com>
+Date: Fri, 30 May 2025 18:47:39 +0800
+Subject: [PATCH] Add the option to disable try-dragon-spawn performance
+ improvement
+
+
+diff --git a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
+index c867796f625813797f167610ad443c4be5a7561e..bea038b36bfa0431d31bbda82c5a94a6daf1b548 100644
+--- a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
++++ b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
+@@ -572,6 +572,7 @@ public class WorldConfiguration extends ConfigurationPart {
+         public boolean disableSprintInterruptionOnAttack = false;
+         public int shieldBlockingDelay = 5;
+         public boolean disableRelativeProjectileVelocity = false;
++        public boolean attemptDragonSpawnPerformanceImprovements = true;
+ 
+         public enum RedstoneImplementation {
+             VANILLA, EIGENCRAFT, ALTERNATE_CURRENT
+diff --git a/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java b/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java
+index 84300f2f7b7be4f5281edd8e263646dbcbb3ba07..763749fa38965cf9acf920c92c87b5129fe2687b 100644
+--- a/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java
++++ b/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java
+@@ -584,7 +584,8 @@ public class EndDragonFight {
+             }
+ 
+             // Paper start - Perf: Do crystal-portal proximity check before entity lookup
+-            if (placedEndCrystalPos != null) {
++            // Paper - add option to disable try-dragon-spawn performance improvement
++            if (placedEndCrystalPos != null && level.paperConfig().misc.attemptDragonSpawnPerformanceImprovements) {
+                 // The end crystal must be 0 or 1 higher than the portal origin
+                 int dy = placedEndCrystalPos.getY() - blockposition.getY();
+                 if (dy != 0 && dy != 1) {
